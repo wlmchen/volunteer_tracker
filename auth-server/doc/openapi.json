@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "QuarryDev Auth",
+    "description": "Authentication Server for [QuarryDev](https://quarrydev.tech).",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "http://api.example.com/v1",
+      "description": "Main (production) server"
+    },
+    {
+      "url": "http://staging-api.example.com",
+      "description": "Internal staging server for testing"
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login",
+        "description": "",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated.  The session ID is returned in a cookie named `connect.sid`. You need to include this cookie in subsequent requests.",
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "example": "connect.sid=fd4698c940c6d1da602a70ac34f0b147; Path=/; HttpOnly"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "Login Successful response",
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "string",
+                      "description": "The name of the user.",
+                      "example": "Default"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "The ID of the user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid Credentials"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "delete": {
+        "tags": ["Authentication"],
+        "summary": "Logout",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Successfully Logged Out"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": ["User"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
+        "summary": "Get user info",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "User data response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "User successful response",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "User ID",
+                      "example": "62e840efac70040aa99523f7"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "User\\'s Full Name",
+                      "example": "John Doe"
+                    },
+                    "username": {
+                      "type": "string",
+                      "description": "Username",
+                      "example": "jdoe22@example.com"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "description": "Session Cookie",
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "connect.sid"
+      }
+    }
+  }
+}

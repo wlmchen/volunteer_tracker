@@ -1,0 +1,4 @@
+Move password reset logic to auth server
+Merge into master
+Fix null assertions for mongodb
+Implement create user endpoint
